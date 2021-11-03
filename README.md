@@ -1,0 +1,1 @@
+# eosio_awtokdist_contracts
