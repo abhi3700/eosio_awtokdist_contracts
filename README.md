@@ -1,1 +1,1 @@
-# eosio_awtokdist_contracts
+# Alien Worlds Token Distribution
