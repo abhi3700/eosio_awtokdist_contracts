@@ -11,8 +11,6 @@
 
 #### Actions
 * `distribute` has params:
-	- `token` of type `IERC20`
-	- `amount` of type `uint256`
 
 ### Execution
 A script in `NodeJS` would perform these operations (mentioned below) in sequence:
