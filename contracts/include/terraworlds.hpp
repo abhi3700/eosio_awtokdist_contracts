@@ -47,20 +47,23 @@ public:
 	 * 
 	 * @param next_id - next id
 	 * @param next_owner - next owner
-	 * @param set_table_size - whether table_size is to be set or not
-	 * @param table_size - table size computed off-chain
+	 * @param set_nft_count - whether nft_count is to be set or not
+	 * @param nft_count - NFT count computed off-chain
 	 */
-	ACTION setparams(uint64_t next_id, const name& next_owner, bool set_table_size, uint64_t table_size);
+	ACTION setparams(uint64_t next_id, const name& next_owner, bool set_nft_count, uint64_t nft_count);
 
 	/**
 	 * @brief - distribute tokens by self
 	 * @details - on receiving tokens from federation account daily, tokens will be 
 	 * 			distributed based on the NFT owners table - "landregs"
-	 * 
+	 * @param next_id - next id to be started with
+	 * @param federation_table_name - For scope of lastdist table. In future, if instead of "landregs", more table is there. 
+	 * 				There could be different scopes.
 	 */
-	ACTION distribute();
+	ACTION distribute( uint64_t next_id, 
+					   const name& federation_table_name );
 
-
+	using setparams_action = action_wrapper<"setparams"_n, &terraworlds::setparams>;
 	using distribute_action = action_wrapper<"distribute"_n, &terraworlds::distribute>;
 
 private:
@@ -69,7 +72,7 @@ private:
 	TABLE lastdist {
 		uint64_t next_id;
 		name next_owner;
-		uint64_t tot_size;
+		uint64_t nft_count;
 		uint64_t next_row_index;
 
 		auto primary_key() const { return id; }
