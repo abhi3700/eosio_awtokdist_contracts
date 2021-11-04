@@ -93,9 +93,9 @@ private:
 
 	// -----------------------------------------------------------------------------------------------------------------------
 	// View data: https://wax.bloks.io/account/alien.worlds?loadContract=true&tab=Tables&account=alien.worlds&scope=alien.worlds&limit=100
-	// Contract - federation
-	// Table - landregs
-	// scope - federation
+	// Contract - alien.worlds
+	// Table - accounts
+	// scope - terra.worlds, ....
 	struct account {
 		asset balance;
 
