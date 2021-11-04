@@ -41,22 +41,36 @@ public:
 				contract(receiver, code, ds) {}
 
 	/**
+	 * @brief - Set params which helps for immediate iterations inß equal distribution of tokens to the owners
+	 * @details - The table size is calculated off-chain as it could be huge & impossible to 
+	 * 			calculate on-chain due to CPU/NET issue.
+	 * 
+	 * @param next_id - next id
+	 * @param next_owner - next owner
+	 * @param set_table_size - whether table_size is to be set or not
+	 * @param table_size - table size computed off-chain
+	 */
+	ACTION setparams(uint64_t next_id, const name& next_owner, bool set_table_size, uint64_t table_size);
+
+	/**
 	 * @brief - distribute tokens by self
-	 * @details - on receiving tokens from federation account daily, tokens will be distributed based on the NFT owners table - "landregs"
+	 * @details - on receiving tokens from federation account daily, tokens will be 
+	 * 			distributed based on the NFT owners table - "landregs"
 	 * 
 	 */
-	
-	ACTION distribute(  );
+	ACTION distribute();
 
 
 	using distribute_action = action_wrapper<"distribute"_n, &terraworlds::distribute>;
 
 private:
 	// -----------------------------------------------------------------------------------------------------------------------
-	// scope - player
+	// scope - landregs, ...
 	TABLE lastdist {
-		uint64_t id;
-		name owner;
+		uint64_t next_id;
+		name next_owner;
+		uint64_t tot_size;
+		uint64_t next_row_index;
 
 		auto primary_key() const { return id; }
 	};
@@ -77,6 +91,16 @@ private:
 
 	typedef multi_index<"landregs"_n,  landreg_item> landregs_table;
 
+	// -----------------------------------------------------------------------------------------------------------------------
+	// View data: https://wax.bloks.io/account/alien.worlds?loadContract=true&tab=Tables&account=alien.worlds&scope=alien.worlds&limit=100
+	// Contract - federation
+	// Table - landregs
+	// scope - federation
+	struct account {
+		asset balance;
 
+		uint64_t primary_key()const { return balance.symbol.code().raw(); }
+	};
 
+	typedef eosio::multi_index< "accounts"_n, account > accounts;
 };
