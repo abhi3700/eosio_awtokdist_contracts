@@ -35,75 +35,75 @@ CONTRACT terraworlds : public contract
 private:
 
 public:
-	using contract::contract;
+    using contract::contract;
 
-	terraworlds(name receiver, name code, datastream<const char*> ds) : 
-				contract(receiver, code, ds) {}
+    terraworlds(name receiver, name code, datastream<const char*> ds) : 
+                contract(receiver, code, ds) {}
 
-	/**
-	 * @brief - Set params which helps for immediate iterations inß equal distribution of tokens to the owners
-	 * @details - The table size is calculated off-chain as it could be huge & impossible to 
-	 * 			calculate on-chain due to CPU/NET issue.
-	 * 
-	 * @param next_id - next id
-	 * @param next_owner - next owner
-	 * @param set_nft_count - whether nft_count is to be set or not
-	 * @param nft_count - NFT count computed off-chain
-	 */
-	ACTION setparams(uint64_t next_id, const name& next_owner, bool set_nft_count, uint64_t nft_count);
+    /**
+     * @brief - Set params which helps for immediate iterations inß equal distribution of tokens to the owners
+     * @details - The table size is calculated off-chain as it could be huge & impossible to 
+     *          calculate on-chain due to CPU/NET issue.
+     * 
+     * @param next_id - next id
+     * @param next_owner - next owner
+     * @param set_nft_count - whether nft_count is to be set or not
+     * @param nft_count - NFT count computed off-chain
+     */
+    ACTION setparams(uint64_t next_id, const name& next_owner, bool set_nft_count, uint64_t nft_count);
 
-	/**
-	 * @brief - distribute tokens by self
-	 * @details - on receiving tokens from federation account daily, tokens will be 
-	 * 			distributed based on the NFT owners table - "landregs"
-	 * @param next_id - next id to be started with
-	 * @param federation_table_name - For scope of lastdist table. In future, if instead of "landregs", more table is there. 
-	 * 				There could be different scopes.
-	 */
-	ACTION distribute( uint64_t next_id, 
-					   const name& federation_table_name );
+    /**
+     * @brief - distribute tokens by self
+     * @details - on receiving tokens from federation account daily, tokens will be 
+     *          distributed based on the NFT owners table - "landregs"
+     * @param next_id - next id to be started with
+     * @param federation_table_name - For scope of lastdist table. In future, if instead of "landregs", more table is there. 
+     *              There could be different scopes.
+     */
+    ACTION distribute( uint64_t next_id, 
+                       const name& federation_table_name );
 
-	using setparams_action = action_wrapper<"setparams"_n, &terraworlds::setparams>;
-	using distribute_action = action_wrapper<"distribute"_n, &terraworlds::distribute>;
+    using setparams_action = action_wrapper<"setparams"_n, &terraworlds::setparams>;
+    using distribute_action = action_wrapper<"distribute"_n, &terraworlds::distribute>;
 
 private:
-	// -----------------------------------------------------------------------------------------------------------------------
-	// scope - landregs, ...
-	TABLE lastdist {
-		uint64_t next_id;
-		name next_owner;
-		uint64_t nft_count;
-		uint64_t next_row_index;
+    // -----------------------------------------------------------------------------------------------------------------------
+    // scope - landregs, ...
+    TABLE lastdist {
+        uint64_t next_id;
+        name next_owner;
+        uint64_t nft_count;
+        uint64_t next_row_index;
 
-		auto primary_key() const { return id; }
-	};
+        auto primary_key() const { return id; }
+    };
 
-	using lastdist_index = multi_index<"lastdist"_n, lastdist>;
+    using lastdist_index = multi_index<"lastdist"_n, lastdist>;
 
-	// -----------------------------------------------------------------------------------------------------------------------
-	// View data: https://wax.bloks.io/account/federation?loadContract=true&tab=Tables&account=federation&scope=federation&limit=100&table=landregs
-	// Contract - federation
-	// Table - landregs
-	// scope - federation
-	struct landreg_item {
-		uint64_t id;
-		name owner;
+    // -----------------------------------------------------------------------------------------------------------------------
+    // View data: https://wax.bloks.io/account/federation?loadContract=true&tab=Tables&account=federation&scope=federation&limit=100&table=landregs
+    // Contract - federation
+    // Table - landregs
+    // scope - federation
+    struct landreg_item {
+        uint64_t id;
+        name owner;
 
-		uint64_t primary_key() const { return id; }
-	}
+        uint64_t primary_key() const { return id; }
+    }
 
-	typedef multi_index<"landregs"_n,  landreg_item> landregs_table;
+    typedef multi_index<"landregs"_n,  landreg_item> landregs_table;
 
-	// -----------------------------------------------------------------------------------------------------------------------
-	// View data: https://wax.bloks.io/account/alien.worlds?loadContract=true&tab=Tables&account=alien.worlds&scope=alien.worlds&limit=100
-	// Contract - alien.worlds
-	// Table - accounts
-	// scope - terra.worlds, ....
-	struct account {
-		asset balance;
+    // -----------------------------------------------------------------------------------------------------------------------
+    // View data: https://wax.bloks.io/account/alien.worlds?loadContract=true&tab=Tables&account=alien.worlds&scope=alien.worlds&limit=100
+    // Contract - alien.worlds
+    // Table - accounts
+    // scope - terra.worlds, ....
+    struct account {
+        asset balance;
 
-		uint64_t primary_key()const { return balance.symbol.code().raw(); }
-	};
+        uint64_t primary_key()const { return balance.symbol.code().raw(); }
+    };
 
-	typedef eosio::multi_index< "accounts"_n, account > accounts;
+    typedef eosio::multi_index< "accounts"_n, account > accounts;
 };
