@@ -2,15 +2,27 @@
 
 ### Deployment
 * Deploy the `terra.worlds` contract.
-* Set the 1st `id` & `owner` fields from `federation::landregs` table into `terra.worlds::lastdist` table via `setparams`
+* Run the execution script as mentioned [here](#execution).
 
 ### SC System Design
 #### Constructor
+* Initialize the below params:
+	- `token_symbol`
+	- `token_contract_ac`
+	- `federation_contract_ac`
 
 #### Tables
+* `lastdist`
+	- `table_name`
+	- `next_id`
+	- `next_owner`
+	- `nft_count`
 
 #### Actions
 * `distribute` has params:
+	- `table_name`
+	- `loop_count`
+	- `token_transfer_memo`
 
 ### Execution
 A script in `NodeJS` would perform these operations (mentioned below) in sequence:
