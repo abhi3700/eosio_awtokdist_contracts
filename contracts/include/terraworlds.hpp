@@ -47,35 +47,45 @@ public:
      * 
      * @param next_id - next id
      * @param next_owner - next owner
-     * @param set_nft_count - whether nft_count is to be set or not
-     * @param nft_count - NFT count computed off-chain
+     * @param next_row_index - next row index. This helps in iterating across the rows & ensuring that in the last run 
+     *                  of `distribute` function in single execution, it stops when needed & the `lastdist` table is cleared.
+     * @param nft_count - NFT count from "federation::landregs" table  computed off-chain. This is to be calculated once per 
+     *          execution in off-chain script.
+     *      NOTE: If it's not to be set, then put as zero
      */
-    ACTION setparams(uint64_t next_id, const name& next_owner, bool set_nft_count, uint64_t nft_count);
+    ACTION setparams( 
+                    const name& table_name,
+                    uint64_t next_id, 
+                    const name& next_owner,
+                    // uint64_t next_row_index,
+                    uint64_t nft_count
+                    );
 
     /**
      * @brief - distribute tokens by self
      * @details - on receiving tokens from federation account daily, tokens will be 
      *          distributed based on the NFT owners table - "landregs"
      * @param next_id - next id to be started with
-     * @param federation_table_name - For scope of lastdist table. In future, if instead of "landregs", more table is there. 
-     *              There could be different scopes.
      */
-    ACTION distribute( uint64_t next_id, 
-                       const name& federation_table_name );
+    ACTION distribute( 
+                      const name& table_name, 
+                      uint32_t loop_count 
+                      );
 
     using setparams_action = action_wrapper<"setparams"_n, &terraworlds::setparams>;
     using distribute_action = action_wrapper<"distribute"_n, &terraworlds::distribute>;
 
 private:
     // -----------------------------------------------------------------------------------------------------------------------
-    // scope - landregs, ...
+    // scope - self
     TABLE lastdist {
+        name table_name;        // landregs, ...
         uint64_t next_id;
         name next_owner;
         uint64_t nft_count;
-        uint64_t next_row_index;
+        // uint64_t next_row_index;
 
-        auto primary_key() const { return id; }
+        auto primary_key() const { return table_name.value; }
     };
 
     using lastdist_index = multi_index<"lastdist"_n, lastdist>;
