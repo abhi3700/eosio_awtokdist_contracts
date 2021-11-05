@@ -138,8 +138,8 @@ void terraworlds::distribute(
     } else {
         // modify the row next_id & next_owner
         lastdist_table.modify(lastdist_it, get_self(), [&](auto& row) {
-            row.next_id = next_id;
-            row.next_owner = next_owner;
+            row.next_id = landregs_it->id;
+            row.next_owner = landregs_it->owner;
         });
     }
 
