@@ -124,7 +124,7 @@ void terraworlds::distribute(
     for( auto itr = owners_map.begin(); itr != owners_map.end(); ++itr) {
         action(
             permission_level{get_self(), "active"_n},
-            "alien.worlds"_n,
+            token_contract_ac,
             "transfer"_n,
             std::make_tuple(get_self(), itr->first, itr->second, token_transfer_memo)
         ).send();
