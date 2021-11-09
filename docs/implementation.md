@@ -19,6 +19,11 @@
 	- `nft_count`
 
 #### Actions
+* `setparams` has params:
+	- `table_name`
+	- `next_id`
+	- `next_owner`
+	- `nft_count`
 * `distribute` has params:
 	- `table_name`
 	- `loop_count`
