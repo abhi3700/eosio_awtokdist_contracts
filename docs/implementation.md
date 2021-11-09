@@ -30,7 +30,7 @@ A script in `NodeJS` would perform these operations (mentioned below) in sequenc
 1. Read the 1st row with fields `id` & `owner` from `federation::landregs` table using `eosjs` `get_table_rows` method. [Source](https://developers.eos.io/manuals/eosjs/v21.0/how-to-guides/how-to-get-table-information/#get-table-rows)
 1. Calculate the "landreg" row/nft count via off-chain by getting the row_array length obtained by `get_table_rows` method.
 1. Store these into on-chain table - "lastdist" into `table_name`, `next_id`, `next_owner`, `nft_count` fields respectively via `setparams` ACTION.
-1. Trigger `distribute()` function inside a while loop.
+1. Trigger `distribute()` ACTION repeatedly inside a `while` loop, based on row availability in "terra.worlds::lastdist" TABLE.
 ```
 while (`landregs` row is found) {
 	a. determine loop_count
